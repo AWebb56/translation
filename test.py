@@ -1,5 +1,6 @@
 import pandas
 
+
 def csv_to_dict(csv_filename):
     dt = pandas.read_csv(csv_filename, header=None)
     data = {}
@@ -12,9 +13,39 @@ def csv_to_dict(csv_filename):
             data[char] = [row]
     return data
 
+
 def main():
-    filenames = ["Noun.csv", "Verb.csv", "Adj.csv", "Adverb.csv", "Symbol.csv"]
-    noun, verb, adj, adv, symbol = [csv_to_dict(filename) for filename in filenames]
+    filenames = [
+        "adj",
+        "adnominal",
+        "adverb",
+        "auxil",
+        "conjunction",
+        "filler",
+        "interjection",
+        "noun.adjv",
+        "noun.adverbal",
+        "noun",
+        "noun.demonst",
+        "noun.nai",
+        "noun.name",
+        "noun.number",
+        "noun.org",
+        "noun.others" "noun.place",
+        "noun.proper",
+        "noun.verbal",
+        "others",
+        "postp-col",
+        "postp",
+        "prefix",
+        "suffix",
+        "symbol",
+        "verb",
+    ]
+    words = {}
+    for part_of_speech in filenames:
+        words[part_of_speech] = csv_to_dict(f"{part_of_speech.capitalize()}.csv")
+
 
 if __name__ == "__main__":
     main()
