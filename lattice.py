@@ -1,4 +1,6 @@
+import os
 import pandas
+import pickle
 
 
 # words[char] = [[word, leftId, rigthId, cost, part of speech, lemma] for words starting with char]
@@ -155,9 +157,14 @@ def read_sentences():
 
 
 def main():
-    words = read_csv_files()
-    matrix = read_matrix_file()
-    sentences = read_sentences()
+    filename = "serialized.pickle"
+    if os.path.isfile(filename):
+        words, matrix, sentences = pickle.load(open(filename, "rb"))
+    else:
+        words = read_csv_files()
+        matrix = read_matrix_file()
+        sentences = read_sentences()
+        pickle.dump((words, matrix, sentences), open(filename, "wb"))
 
     for i, text in enumerate(sentences):
         if i != 0:
