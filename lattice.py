@@ -63,9 +63,11 @@ def read_matrix_file():
             leftId, rightId, cost = map(int, f.readline().split())
             matrix[(leftId, rightId)] = cost
     return matrix
+
+
 # Node class to construct lattice
 class node:
-    def __init__(self, word, leftID, rightID,cost, prevNode, pos, lemma):
+    def __init__(self, word, leftID, rightID, cost, prevNode, pos, lemma):
         self.word = word
         self.leftID = leftID
         self.rightID = rightID
@@ -73,10 +75,12 @@ class node:
         self.prevNode = prevNode
         self.pos = pos
         self.lemma = lemma
+
+
 # lattice[0] = [nodea, nodeb, ...] for words starting at position i
 # lattice[1] = [nodea, nodeb, ...] for words ending at position i-1
 def generate_lattice(text, words):
-    lattice = [[[] for _ in range(len(text) + 1)],[[] for _ in range(len(text) + 1)]]
+    lattice = [[[] for _ in range(len(text) + 1)], [[] for _ in range(len(text) + 1)]]
     for i in range(len(text)):
         char = text[i]
         if char in words:
@@ -87,10 +91,12 @@ def generate_lattice(text, words):
                 cost = word_info[3]
                 part_of_speech = word_info[4]
                 lemma = word_info[5]
-                word_node = node(word, leftId, rightId, cost, None, part_of_speech, lemma)
+                word_node = node(
+                    word, leftId, rightId, cost, None, part_of_speech, lemma
+                )
                 if text[i : i + len(word)] == word:
                     lattice[0][i].append(word_node)
-                    lattice[1][i+len(word)].append(word_node)
+                    lattice[1][i + len(word)].append(word_node)
     return lattice
 
 
@@ -105,7 +111,7 @@ def best_path(lattice, matrix):
         for path in lattice[0][i]:
             # Handle special start node
             if i == 0:
-                path.cost = path.cost + matrix[(0,path.leftID)]
+                path.cost = path.cost + matrix[(0, path.leftID)]
                 continue
             # Check costs to every node that ends at i-1
             best_cost = float("inf")
@@ -113,7 +119,7 @@ def best_path(lattice, matrix):
             for node in lattice[1][i]:
                 if node.cost == float("inf"):
                     continue
-                total_cost = path.cost + matrix[(node.rightID,path.leftID)]
+                total_cost = path.cost + matrix[(node.rightID, path.leftID)]
                 if total_cost < best_cost:
                     best_cost = total_cost
                     prevNode = node
@@ -122,10 +128,10 @@ def best_path(lattice, matrix):
     # Find optimal cost to end
     final_cost = float("inf")
     final_node = None
-    for last_node in lattice[1][len(lattice[1])-1]:
+    for last_node in lattice[1][len(lattice[1]) - 1]:
         if last_node.cost == float("inf"):
             continue
-        total_cost = last_node.cost + matrix[(last_node.rightID,0)]
+        total_cost = last_node.cost + matrix[(last_node.rightID, 0)]
         if total_cost < final_cost:
             final_cost = total_cost
             final_node = last_node
